@@ -1,49 +1,68 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
+import sqlite3
+
+conn = sqlite3.connect('/home/deq/Desktop/to-do-app/data.db',check_same_thread=False)
+
 
 app = Flask(__name__)
 
+conn.execute('''CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY, name TEXT, status TEXT)''')
+conn.commit()
+
 # in-memory storage for tasks
-tasks = []
+
+#tasks = []
+
+#[conn.execute('SELECT json_agg(my_table) FROM my_table'),conn.execute('SELECT status FROM items')]
 
 # home page
 @app.route('/')
 def home():
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, name, status FROM items')
+    tasks = cursor.fetchall()
+    #for task in tasks:
+        #print(task[0])
+        #print(task[1])
+        #print(task[2])
+    #for row in result_set:
+    #    print(row)
     return render_template('index.html', tasks=tasks)
 
 # add a new task
 @app.route('/add', methods=['POST'])
 def add():
     task = request.form['task']
-    tasks.append({'name': task, 'completed': False})
+    #tasks.append({'name': task, 'completed': False})
+    #print(task)
+    #conn.execute('''CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY, name TEXT, status TEXT)''')
+    conn.execute('INSERT INTO items (name, status) VALUES (?, ?)', (task, False))
+    conn.commit()
     return redirect(url_for('home'))
 
 # mark a task as completed
 @app.route('/complete/<int:index>')
 def complete(index):
-    tasks[index]['completed'] = True
+    #tasks[index]['completed'] = True
+    conn.execute('UPDATE items SET status = ? WHERE id = ?', (True, index))
+    conn.commit()
     return redirect(url_for('home'))
 
 # mark a task as incomplete
 @app.route('/incomplete/<int:index>')
 def incomplete(index):
-    tasks[index]['completed'] = False
+    #tasks[index]['completed'] = False
+    conn.execute('UPDATE items SET status = ? WHERE id = ?', (False, index))
+    conn.commit()
     return redirect(url_for('home'))
-
-# delete a task
-#@app.route('/delete/<int:index>')
-#def delete(index):
-#    del tasks[index]
-#    return redirect(url_for('home'))
 
 # delete a task
 @app.route('/delete/<int:index>', methods=['DELETE', 'GET'])
 def delete(index):
-    del tasks[index]
+    #del tasks[index]
+    conn.execute('DELETE FROM items WHERE id = ?', (index,))
+    conn.commit()
     return redirect(url_for('home'))
-
-# edit a task
-#
-
 
 if __name__ == '__main__':
     #app.run(debug=True)

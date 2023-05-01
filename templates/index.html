@@ -7,10 +7,10 @@
 	<h1>To-Do List</h1>
 	<ul>
 	{% for task in tasks %}
-		{% if task['completed'] %}
-			<li><del>{{ task['name'] }}</del> <a href="{{ url_for('incomplete', index=loop.index-1) }}">  &nbsp &nbsp (Undo)</a> <a href="{{ url_for('delete', index=loop.index-1) }}"> &nbsp &nbsp (Delete)</a></li>
+		{% if task[2] == '1' %}
+			<li><del>{{ task[1] }}</del> <a href="{{ url_for('incomplete', index=task[0]) }}">  &nbsp &nbsp (Undo)</a> <a href="{{ url_for('delete', index=task[0]) }}"> &nbsp &nbsp (Delete)</a></li>
 		{% else %}
-			<li><a href="{{ url_for('complete', index=loop.index-1) }}">{{ task['name'] }}&nbsp &nbsp  (Done)</a> <a href="{{ url_for('delete', index=loop.index-1) }}">&nbsp &nbsp(Delete)</a></li>
+			<li><a href="{{ url_for('complete', index=task[0]) }}">{{ task[1] }}&nbsp &nbsp  (Done)</a> <a href="{{ url_for('delete', index=task[0]) }}">&nbsp &nbsp(Delete)</a></li>
 		{% endif %}
 	{% endfor %}
 	</ul>
