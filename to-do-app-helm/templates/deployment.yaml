@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-todoapp
+  labels:
+    app: to-do
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: to-do
+  template:
+    metadata:
+      labels:
+        app: to-do
+    spec:
+      containers:
+      - name: to-do
+        image: {{ .Values.image.name }}
+        volumeMounts:
+         - name: my-volume
+           mountPath: /app/data
+        ports:
+        - containerPort: 5000
+      volumes:
+        - name: my-volume
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-pvc
