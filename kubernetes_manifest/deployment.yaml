@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-to-do-app
+  labels:
+    app: to-do
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: to-do
+  template:
+    metadata:
+      labels:
+        app: to-do
+    spec:
+      containers:
+      - name: to-do
+        image: sagarparkar/python-todo-app:v13
+        volumeMounts:
+         - name: my-volume
+           mountPath: /app/data
+        ports:
+        - containerPort: 5000
+      volumes:
+        - name: my-volume
+          persistentVolumeClaim:
+            claimName: my-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-to-do-service
+spec:
+  type: NodePort
+  selector:
+    app: to-do
+  ports:
+      # By default and for convenience, the `targetPort` is set to the same value as the `port` field.
+    - port: 5000
+      targetPort: 5000
+      # Optional field
+      # By default and for convenience, the Kubernetes control plane will allocate a port from a range (default: 30000-32767)
+      nodePort: 30007
+---
+

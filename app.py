@@ -1,7 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import sqlite3
+from pathlib import Path
 
-conn = sqlite3.connect('/home/deq/Desktop/to-do-app/data.db',check_same_thread=False)
+cwd = Path.cwd()
+path_to_db = str(cwd) + "/data/data.db"
+print("Current directory path:", path_to_db)
+
+conn = sqlite3.connect(path_to_db,check_same_thread=False)
 
 
 app = Flask(__name__)
@@ -21,6 +26,7 @@ def home():
     cursor = conn.cursor()
     cursor.execute('SELECT id, name, status FROM items')
     tasks = cursor.fetchall()
+    #print("Current directory path:", cwd)
     #for task in tasks:
         #print(task[0])
         #print(task[1])
