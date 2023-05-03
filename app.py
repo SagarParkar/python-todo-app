@@ -8,11 +8,14 @@ print("Current directory path:", path_to_db)
 
 conn = sqlite3.connect(path_to_db,check_same_thread=False)
 
-
 app = Flask(__name__)
 
+#with sqlite3.connect(path_to_db,check_same_thread=False) as conn:
+    #conn.execute('''CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY, name TEXT, status TEXT)''')
+    #conn.commit()
 conn.execute('''CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY, name TEXT, status TEXT)''')
 conn.commit()
+
 
 # in-memory storage for tasks
 

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: to-do
-        image: sagarparkar/python-todo-app:v13
+        image: sagarparkar/python-todo-app:v17
         volumeMounts:
          - name: my-volume
            mountPath: /app/data
@@ -25,14 +25,14 @@ spec:
       volumes:
         - name: my-volume
           persistentVolumeClaim:
-            claimName: my-pvc
+            claimName: azure-managed-disk
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: my-to-do-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: to-do
   ports:
@@ -41,6 +41,6 @@ spec:
       targetPort: 5000
       # Optional field
       # By default and for convenience, the Kubernetes control plane will allocate a port from a range (default: 30000-32767)
-      nodePort: 30007
+      #nodePort: 30007
 ---
 

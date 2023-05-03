@@ -2,3 +2,4 @@ data.db
 docker-compose.yaml
 kubernetes_manifest/
 to-do-app-helm/
+terraform_files/
